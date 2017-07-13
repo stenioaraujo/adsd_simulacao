@@ -21,7 +21,6 @@ public class Simulador extends Observable {
         for (;tempoAtual <= duracao; tempoAtual++) {
             realizarEtapas();
         }
-        criarEvento("Término de serviço", this.tempoAtual - 1);
     }
 
     private void realizarEtapas() throws Exception {
@@ -55,10 +54,14 @@ public class Simulador extends Observable {
     private void processar(List<? extends Fregues> fila) throws Exception {
         if (processador.isBusy()) {
             processador.fazClock();
+            if (!processador.isBusy()) {
+                criarEvento("Término de serviço");
+            }
         } else {
             Fregues fregues = fila.get(0);
             fila.remove(0);
             processador.trataFregues(fregues, getRandom(3, 7));
+            criarEvento("Inicio de serviço");
         }
     }
 
@@ -112,7 +115,7 @@ public class Simulador extends Observable {
         } else {
             throw new Exception("Essa classe ainda não existe");
         }
-        criarEvento("colocar freguês na fila", this.tempoAtual - 1);
+        criarEvento("colocar freguês na fila");
     }
 
     /**
@@ -151,9 +154,9 @@ public class Simulador extends Observable {
         return chegadaAlocada.get(tempo);
     }
 
-    private void criarEvento(String tipo, Integer quando) {
+    private void criarEvento(String tipo) {
         setChanged();
-        notifyObservers(new Evento(tipo, quando, this.toString()));
+        notifyObservers(new Evento(tipo, this.tempoAtual, this.toString()));
     }
 
     @Override
