@@ -72,7 +72,7 @@ public class Simulador extends Observable {
         if (!chegada.isEmpty()) {
             for (Fregues fregues: chegada) {
                 adicionaFreguesNaFila(fregues);
-                criaNovoFreguesChegada(fregues.getClass(), this.tempoAtual + getRandom(1, 10));
+                criaNovoFreguesChegada(fregues.getClass());
             }
             chegada.clear();
         }
@@ -81,15 +81,17 @@ public class Simulador extends Observable {
     /**
      * Aloca um fregues de um tipo para um tmepo futuro
      * @param freguesClasse o tipo do Fregues a ser alocado
-     * @param tempoFuturo O tempo que ele deve ser alocado
      * @throws Exception Se não existir este tipo
      */
-    private void criaNovoFreguesChegada(Class<? extends Fregues> freguesClasse, int tempoFuturo) throws Exception {
+    private void criaNovoFreguesChegada(Class<? extends Fregues> freguesClasse) throws Exception {
         Fregues fregues = null;
+        int tempoFuturo;
         if (freguesClasse.equals(FreguesClasseUm.class)) {
             fregues = new FreguesClasseUm();
+            tempoFuturo = this.tempoAtual + getRandom(1, 10);
         } else if (freguesClasse.equals(FreguesClasseDois.class)) {
             fregues = new FreguesClasseDois();
+            tempoFuturo = this.tempoAtual + getRandom(1, 5);
         } else {
             throw new Exception("Essa classe ainda não existe");
         }
